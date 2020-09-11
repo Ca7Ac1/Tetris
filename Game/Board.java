@@ -23,7 +23,7 @@ public class Board extends JPanel implements ActionListener {
     private final int WIDTH = GRID_SIZE_X * GRID_SQUARE_SIZE;
     private final int HEIGHT = GRID_SIZE_Y * GRID_SQUARE_SIZE;
 
-    private final int DELAY = 1000000;
+    private final int DELAY = 100;
     private final int DELAY_BUFFER = 6;
 
     private boolean[][] board;
@@ -73,7 +73,7 @@ public class Board extends JPanel implements ActionListener {
         getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0, false), "RotateRight");
         getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_V, 0, false), "RotateLeft");
         getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0, false), "MoveRight");
-        getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0, false), "MoveRight");
+        getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0, false), "MoveLeft");
 
         getActionMap().put("RotateRight", new AbstractAction() {
 
@@ -129,11 +129,6 @@ public class Board extends JPanel implements ActionListener {
     }
 
     private void update() {
-        updatePiece();
-        repaint();
-    }
-
-    private void updatePiece() {
         if (!currentPiece.fall()) {
             currentPiece.convert(board, colorBoard);
             
@@ -158,6 +153,7 @@ public class Board extends JPanel implements ActionListener {
         super.paintComponent(g);
 
         paintBoard(g);
+        currentPiece.draw(g);
     }
 
     private void paintBoard(Graphics g) {
@@ -175,6 +171,7 @@ public class Board extends JPanel implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        repaint();
         if (e.getSource() == timer) {
             if (buffer == DELAY_BUFFER) {
                 update();

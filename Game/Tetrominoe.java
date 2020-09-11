@@ -38,18 +38,18 @@ public abstract class Tetrominoe {
             }
         } 
 
-        y -= 1;
+        y++;
         return true;
     }
 
     public void moveLeft() {
-        if (kick(x - 1)) {
+        if (!kick(x - 1)) {
             x--;
         }
     }
 
     public void moveRight() {
-        if (kick(x + 1)) {
+        if (!kick(x + 1)) {
             x++;
         }
     }
@@ -68,7 +68,7 @@ public abstract class Tetrominoe {
         for (int i = 0; i < matrix.length; i++) {
             for (int j = 0; j < matrix[i].length; j++) {
                 if (matrix[i][j]) {
-                    if (x + i < 0 || x + i > board.getGridX() - 1) {
+                    if (xPos + i < 0 || xPos + i > board.getGridX() - 1) {
                         return true;
                     }
 
@@ -94,13 +94,14 @@ public abstract class Tetrominoe {
 
     public void draw(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
+        int squareSize = board.getGridSquareSize();
 
         g2d.setColor(color);
 
         for (int i = 0; i < matrix.length; i++) {
             for (int j = 0; j < matrix[i].length; j++) {
                 if (matrix[i][j]) {
-                    g2d.fillRect(i + x, j + y, board.getGridSquareSize(), board.getGridSquareSize());
+                    g2d.fillRect((i + x) * squareSize, (j + y) * squareSize, squareSize, squareSize);
                 }
             }
         }

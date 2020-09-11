@@ -7,7 +7,7 @@ import Game.Tetrominoe;
 
 public class LPiece extends Tetrominoe {
 
-    public LPiece(Board board, boolean[][] matrix, boolean canRotate, Color color) {
+    public LPiece(Board board) {
         super(board, new boolean[][] { { false, true, false }, 
                                        { false, true, false },
                                        { false, true, true }, }, 

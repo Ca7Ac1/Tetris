@@ -1,12 +1,16 @@
 package Game;
 
+import Game.Pieces.*;
+
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 
+import javax.swing.AbstractAction;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import javax.swing.Timer;
@@ -19,7 +23,7 @@ public class Board extends JPanel implements ActionListener {
     private final int WIDTH = GRID_SIZE_X * GRID_SQUARE_SIZE;
     private final int HEIGHT = GRID_SIZE_Y * GRID_SQUARE_SIZE;
 
-    private final int DELAY = 10;
+    private final int DELAY = 1000000;
     private final int DELAY_BUFFER = 6;
 
     private boolean[][] board;
@@ -30,8 +34,39 @@ public class Board extends JPanel implements ActionListener {
 
     private Tetrominoe currentPiece;
 
+    private Tetrominoe[] pieceArray;
+    private int pieceIndex;
+
     public Board() {
+        timer = new Timer(DELAY, this);
+        board = new boolean[GRID_SIZE_X][GRID_SIZE_Y];
+        colorBoard = new Color[GRID_SIZE_X][GRID_SIZE_Y];
+
+        timer.start();
+        initBoard();
+        setPieces();
         setKeys();
+
+        for (int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board[i].length; j++) {
+                board[i][j] = false;
+            }
+        }   
+    }
+
+    private void initBoard() {
+        setPreferredSize(new Dimension(WIDTH, HEIGHT));
+        setFocusable(true);
+        setBackground(Color.BLACK);
+    }
+
+    private void setPieces() {
+        pieceArray = new Tetrominoe[] { new IPiece(this), new JPiece(this), new LPiece(this), new SPiece(this),
+                new TPiece(this), new ZPiece(this), new OPiece(this) };
+
+        shufflePieces();
+        pieceIndex = 1;
+        currentPiece = pieceArray[0];
     }
 
     private void setKeys() {
@@ -39,6 +74,38 @@ public class Board extends JPanel implements ActionListener {
         getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_V, 0, false), "RotateLeft");
         getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0, false), "MoveRight");
         getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0, false), "MoveRight");
+
+        getActionMap().put("RotateRight", new AbstractAction() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // TODO Auto-generated method stub
+            }
+        });
+
+        getActionMap().put("RotateLeft", new AbstractAction() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // TODO Auto-generated method stub
+            }
+        });
+
+        getActionMap().put("MoveRight", new AbstractAction() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                currentPiece.moveRight();
+            }
+        });
+
+        getActionMap().put("MoveLeft", new AbstractAction() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                currentPiece.moveLeft();
+            }
+        });
     }
 
     public boolean[][] getBoard() {
@@ -53,13 +120,44 @@ public class Board extends JPanel implements ActionListener {
         return GRID_SIZE_Y;
     }
 
+    public int getGridSquareSize() {
+        return GRID_SQUARE_SIZE;
+    }
+
+    public boolean[][] getBoardMatrix() {
+        return board;
+    }
+
     private void update() {
+        updatePiece();
+        repaint();
+    }
+
+    private void updatePiece() {
+        if (!currentPiece.fall()) {
+            currentPiece.convert(board, colorBoard);
+            
+            if (pieceIndex != pieceArray.length) {
+                currentPiece = pieceArray[pieceIndex];
+                pieceIndex++;
+            } else {
+                shufflePieces();
+
+                pieceIndex = 1;
+                currentPiece = pieceArray[0];
+            }
+        }
+    }
+
+    private void shufflePieces() {
 
     }
 
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
+
+        paintBoard(g);
     }
 
     private void paintBoard(Graphics g) {
@@ -67,10 +165,7 @@ public class Board extends JPanel implements ActionListener {
 
         for (int i = 0; i < colorBoard.length; i++) {
             for (int j = 0; j < colorBoard[i].length; j++) {
-                if (colorBoard[i][j].equals(null)) {
-                    g2d.setColor(Color.BLACK);
-                    g2d.fillRect(i * GRID_SQUARE_SIZE, j * GRID_SQUARE_SIZE, GRID_SQUARE_SIZE, GRID_SQUARE_SIZE);
-                } else {
+                if (colorBoard[i][j] != null) {
                     g2d.setColor(colorBoard[i][j]);
                     g2d.fillRect(i * GRID_SQUARE_SIZE, j * GRID_SQUARE_SIZE, GRID_SQUARE_SIZE, GRID_SQUARE_SIZE);
                 }

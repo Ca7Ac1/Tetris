@@ -1,18 +1,20 @@
 package Game;
 
 import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 
 public abstract class Tetrominoe {
 
-    Board board;
+    private Board board;
 
-    boolean[][] matrix;
-    boolean canRotate;
+    private boolean[][] matrix;
+    private boolean canRotate;
 
-    int x;
-    int y;
+    private int x;
+    private int y;
 
-    Color color;
+    private Color color;
 
     public Tetrominoe(Board board, boolean[][] matrix, boolean canRotate, Color color) {
         this.board = board;
@@ -20,10 +22,22 @@ public abstract class Tetrominoe {
         this.canRotate = canRotate;
         this.color = color;
         x = 5;
-        y = 26;
+        y = 0;
     }
 
     public boolean fall() {
+        boolean[][] boardMatrix = board.getBoardMatrix();
+
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix[i].length; j++) {
+                if (matrix[i][j]) {
+                    if (j + y + 1 == board.getGridY() || boardMatrix[i + x][j + y + 1]) {
+                        return false;
+                    }
+                }
+            }
+        } 
+
         y -= 1;
         return true;
     }
@@ -53,17 +67,50 @@ public abstract class Tetrominoe {
 
         for (int i = 0; i < matrix.length; i++) {
             for (int j = 0; j < matrix[i].length; j++) {
-                if (matrix[i][j] == true) {
+                if (matrix[i][j]) {
                     if (x + i < 0 || x + i > board.getGridX() - 1) {
                         return true;
                     }
 
-                    if (totalMatrix[i][j] == true) {
+                    if (totalMatrix[i][j]) {
                         return true;
                     }
                 }
             }
         }
         return false;
+    }
+
+    public void convert(boolean[][] boardMatrix, Color[][] colorMatrix) {
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix[i].length; j++) {
+                if (matrix[i][j]) {
+                    boardMatrix[i + x][j + y] = true;
+                    colorMatrix[i + x][j + y] = color;
+                }
+            }
+        }
+    }
+
+    public void draw(Graphics g) {
+        Graphics2D g2d = (Graphics2D) g;
+
+        g2d.setColor(color);
+
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix[i].length; j++) {
+                if (matrix[i][j]) {
+                    g2d.fillRect(i + x, j + y, board.getGridSquareSize(), board.getGridSquareSize());
+                }
+            }
+        }
+    }
+
+    public boolean[][] getMatrix() {
+        return matrix;
+    }
+
+    public Color getColor() {
+        return color;
     }
 }

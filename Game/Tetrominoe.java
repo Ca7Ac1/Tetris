@@ -1,3 +1,5 @@
+package Game;
+
 import java.awt.Color;
 
 public abstract class Tetrominoe {
@@ -45,7 +47,7 @@ public abstract class Tetrominoe {
     public void rotateRight() {
 
     }
-    
+
     private boolean kick(int xPos) {
         boolean[][] totalMatrix = board.getBoard();
 
@@ -55,7 +57,7 @@ public abstract class Tetrominoe {
                     if (x + i < 0 || x + i > board.getGridX() - 1) {
                         return true;
                     }
-                    
+
                     if (totalMatrix[i][j] == true) {
                         return true;
                     }

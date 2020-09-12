@@ -23,8 +23,8 @@ public class Board extends JPanel implements ActionListener {
     private final int WIDTH = GRID_SIZE_X * GRID_SQUARE_SIZE;
     private final int HEIGHT = GRID_SIZE_Y * GRID_SQUARE_SIZE;
 
-    private final int DELAY = 100;
-    private final int DELAY_BUFFER = 6;
+    private final int DELAY = 10;
+    private final int DELAY_BUFFER = 15;
 
     private boolean[][] board;
     private Color[][] colorBoard;
@@ -136,6 +136,7 @@ public class Board extends JPanel implements ActionListener {
                 currentPiece = pieceArray[pieceIndex];
                 pieceIndex++;
             } else {
+                System.out.println("refresh");
                 shufflePieces();
 
                 pieceIndex = 1;
@@ -144,8 +145,13 @@ public class Board extends JPanel implements ActionListener {
         }
     }
 
-    private void shufflePieces() {
+    public void drop() {
+        
+    }
 
+    private void shufflePieces() {
+        pieceArray = new Tetrominoe[] { new IPiece(this), new JPiece(this), new LPiece(this), new SPiece(this),
+            new TPiece(this), new ZPiece(this), new OPiece(this) };
     }
 
     @Override

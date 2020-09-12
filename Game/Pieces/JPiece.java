@@ -8,9 +8,9 @@ import Game.Tetrominoe;
 public class JPiece extends Tetrominoe {
 
     public JPiece(Board board) {
-        super(board, new boolean[][] { { false, true, false }, 
-                                       { false, true, false },
-                                       { true, true, false }, }, 
+        super(board, new boolean[][] { { true, false, false }, 
+                                       { true, true, true },
+                                       { false, false, false }, }, 
                                        true, Color.BLUE);
     }
 }

@@ -8,10 +8,10 @@ import Game.Tetrominoe;
 public class ZPiece extends Tetrominoe {
 
     public ZPiece(Board board) {
-        super(board, new boolean[][] { { false, true, false }, 
-                                       { true, true, false },
-                                       { true, false, false }, }, 
-                                       true, Color.CYAN);
+        super(board, new boolean[][] { { true, true, false }, 
+                                       { false, true, true },
+                                       { false, false, false }, }, 
+                                       true, Color.RED);
     }
     
 }

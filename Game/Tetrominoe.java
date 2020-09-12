@@ -36,7 +36,7 @@ public abstract class Tetrominoe {
                     }
                 }
             }
-        } 
+        }
 
         y++;
         return true;
@@ -68,11 +68,11 @@ public abstract class Tetrominoe {
         for (int i = 0; i < matrix.length; i++) {
             for (int j = 0; j < matrix[i].length; j++) {
                 if (matrix[i][j]) {
-                    if (xPos + i < 0 || xPos + i > board.getGridX() - 1) {
+                    if (i + xPos < 0 || i + xPos > board.getGridX() - 1) {
                         return true;
                     }
 
-                    if (totalMatrix[i][j]) {
+                    if (totalMatrix[i + xPos][j + y]) {
                         return true;
                     }
                 }
@@ -82,14 +82,43 @@ public abstract class Tetrominoe {
     }
 
     public void convert(boolean[][] boardMatrix, Color[][] colorMatrix) {
+        int row;
+
         for (int i = 0; i < matrix.length; i++) {
             for (int j = 0; j < matrix[i].length; j++) {
                 if (matrix[i][j]) {
+                    row = 0;
+
                     boardMatrix[i + x][j + y] = true;
                     colorMatrix[i + x][j + y] = color;
                 }
             }
         }
+
+        for (int i = 0; i < matrix[0].length; i++) {
+            row = 0;
+
+            if (i + y < board.getGridY() && i + y >= 0) {
+                for (int j = 0; j < boardMatrix.length; j++) {
+                    if (boardMatrix[j][i + y]) {
+                        row++;
+                        System.out.println(row);
+                    } else {
+                        break;
+                    }
+                }
+
+                if (row == board.getGridX()) {
+                    System.out.println("delete");
+                    for (int k = 0; k < boardMatrix.length; k++) {
+                        boardMatrix[k][i + y] = false;
+                        colorMatrix[k][i + y] = null;
+                    }
+                }
+            }
+        }
+
+        board.drop();
     }
 
     public void draw(Graphics g) {

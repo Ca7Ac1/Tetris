@@ -124,6 +124,7 @@ public abstract class Tetrominoe {
                 for (int j = 0; j < boardMatrix.length; j++) {
                     if (boardMatrix[j][i + y]) {
                         row++;
+                        System.out.println(row);
                     } else {
                         break;
                     }
@@ -131,16 +132,15 @@ public abstract class Tetrominoe {
 
                 if (row == board.getGridX()) {
                     System.out.println("delete");
-
-                    for (int k = i; k > 0; k--) {
-                        for (int replaceX = 0; replaceX < board.getGridX(); replaceX++) {
-                            boardMatrix[replaceX][k] = boardMatrix[replaceX][k - 1];
-                            colorMatrix[replaceX][k] = colorMatrix[replaceX][k - 1];
-                        }
-                    }  
+                    for (int k = 0; k < boardMatrix.length; k++) {
+                        boardMatrix[k][i + y] = false;
+                        colorMatrix[k][i + y] = null;
+                    }
                 }
             }
         }
+
+        board.drop();
     }
 
     public void draw(Graphics g) {

@@ -145,6 +145,10 @@ public class Board extends JPanel implements ActionListener {
         }
     }
 
+    public void drop() {
+
+    }
+    
     private void shufflePieces() {
         pieceArray = new Tetrominoe[] { new IPiece(this), new JPiece(this), new LPiece(this), new SPiece(this),
                 new TPiece(this), new ZPiece(this), new OPiece(this) };

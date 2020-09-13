@@ -146,7 +146,28 @@ public class Board extends JPanel implements ActionListener {
     }
 
     public void drop() {
-        
+        int row;
+
+        for (int i = GRID_SIZE_Y - 1; i >= 0; i--) {
+            row = 0;
+
+            for (int j = 0; j < GRID_SIZE_X; j++) {
+                if (!board[j][i]) {
+                    row++;
+                } else {
+                    break;
+                }
+            }
+
+            if (row == GRID_SIZE_X) {
+                for (int k = i; k > 0; k--) {
+                    for (int replaceX = 0; replaceX < GRID_SIZE_X; replaceX++) {
+                        board[replaceX][k] = board[replaceX][k - 1];
+                        colorBoard[replaceX][k] = colorBoard[replaceX][k - 1];
+                    }
+                }
+            }
+        }
     }
 
     private void shufflePieces() {

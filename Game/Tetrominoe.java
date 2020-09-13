@@ -3,6 +3,7 @@ package Game;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.util.Arrays;
 
 public abstract class Tetrominoe {
 
@@ -55,11 +56,32 @@ public abstract class Tetrominoe {
     }
 
     public void rotateLeft() {
+        if (canRotate) {
 
+        }
     }
 
     public void rotateRight() {
+        if (canRotate) {
+            boolean[][] previousMatrix = new boolean[matrix.length][matrix[0].length];
 
+            for (int i = 0; i < matrix.length; i++) {
+                for (int j = 0; j < matrix[i].length; j++) {
+                    previousMatrix[i][j] = matrix[i][j];
+                }
+            }
+
+            for (int i = 0; i < matrix.length / 2; i++) {
+                for (int j = i; j < matrix.length - i - 1; j++) {
+                    boolean temp = matrix[i][j];
+
+                    matrix[i][j] = matrix[j][matrix.length - i - 1];
+                    matrix[j][matrix.length - i - 1] = matrix[matrix.length - i - 1][matrix.length - j - 1];
+                    matrix[matrix.length - i - 1][matrix.length - j - 1] = matrix[matrix.length - j - 1][i];
+                    matrix[matrix.length - j - 1][i] = temp;
+                }
+            }
+        }
     }
 
     private boolean kick(int xPos) {
@@ -83,7 +105,6 @@ public abstract class Tetrominoe {
 
     public void convert(boolean[][] boardMatrix, Color[][] colorMatrix) {
         int row;
-        boolean rowDeleted = false;
 
         for (int i = 0; i < matrix.length; i++) {
             for (int j = 0; j < matrix[i].length; j++) {
@@ -96,7 +117,7 @@ public abstract class Tetrominoe {
             }
         }
 
-        for (int i = 0; i < matrix[0].length; i++) {
+        for (int i = matrix[0].length; i >= 0; i--) {
             row = 0;
 
             if (i + y < board.getGridY() && i + y >= 0) {
@@ -110,18 +131,15 @@ public abstract class Tetrominoe {
 
                 if (row == board.getGridX()) {
                     System.out.println("delete");
-                    rowDeleted = true;
 
-                    for (int k = 0; k < boardMatrix.length; k++) {
-                        boardMatrix[k][i + y] = false;
-                        colorMatrix[k][i + y] = null;
-                    }
+                    for (int k = i; k > 0; k--) {
+                        for (int replaceX = 0; replaceX < board.getGridX(); replaceX++) {
+                            boardMatrix[replaceX][k] = boardMatrix[replaceX][k - 1];
+                            colorMatrix[replaceX][k] = colorMatrix[replaceX][k - 1];
+                        }
+                    }  
                 }
             }
-        }
-
-        if (rowDeleted) {
-            board.drop();
         }
     }
 

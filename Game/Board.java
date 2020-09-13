@@ -51,7 +51,7 @@ public class Board extends JPanel implements ActionListener {
             for (int j = 0; j < board[i].length; j++) {
                 board[i][j] = false;
             }
-        }   
+        }
     }
 
     private void initBoard() {
@@ -79,7 +79,7 @@ public class Board extends JPanel implements ActionListener {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                // TODO Auto-generated method stub
+                currentPiece.rotateRight();
             }
         });
 
@@ -87,7 +87,7 @@ public class Board extends JPanel implements ActionListener {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                // TODO Auto-generated method stub
+                currentPiece.rotateLeft();
             }
         });
 
@@ -131,7 +131,7 @@ public class Board extends JPanel implements ActionListener {
     private void update() {
         if (!currentPiece.fall()) {
             currentPiece.convert(board, colorBoard);
-            
+
             if (pieceIndex != pieceArray.length) {
                 currentPiece = pieceArray[pieceIndex];
                 pieceIndex++;
@@ -145,34 +145,9 @@ public class Board extends JPanel implements ActionListener {
         }
     }
 
-    public void drop() {
-        int row;
-
-        for (int i = GRID_SIZE_Y - 1; i >= 0; i--) {
-            row = 0;
-
-            for (int j = 0; j < GRID_SIZE_X; j++) {
-                if (!board[j][i]) {
-                    row++;
-                } else {
-                    break;
-                }
-            }
-
-            if (row == GRID_SIZE_X) {
-                for (int k = i; k > 0; k--) {
-                    for (int replaceX = 0; replaceX < GRID_SIZE_X; replaceX++) {
-                        board[replaceX][k] = board[replaceX][k - 1];
-                        colorBoard[replaceX][k] = colorBoard[replaceX][k - 1];
-                    }
-                }
-            }
-        }
-    }
-
     private void shufflePieces() {
         pieceArray = new Tetrominoe[] { new IPiece(this), new JPiece(this), new LPiece(this), new SPiece(this),
-            new TPiece(this), new ZPiece(this), new OPiece(this) };
+                new TPiece(this), new ZPiece(this), new OPiece(this) };
     }
 
     @Override

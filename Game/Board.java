@@ -27,6 +27,7 @@ public class Board extends JPanel implements ActionListener {
     private final int DELAY = 10;
     private final int DELAY_BUFFER = 15;
     private final int FALL_DELAY = 3;
+    private final int FALL_SPEED = 10;
     private final int MOVE_DELAY = 8;
     private final int MOVE_SUBTRACTION = 3;
     private final int STALL = 5;
@@ -45,19 +46,23 @@ public class Board extends JPanel implements ActionListener {
 
     private boolean moveLeft;
     private boolean moveRight;
+    private boolean fall;
 
     private Tetrominoe[] pieceArray;
     private int pieceIndex;
 
     private int currentMoveDelay;
     private int moveDelayCount;
+    private int fallCount;
 
     public Board() {
         timer = new Timer(DELAY, this);
         bufferControlTimer = false;
         held = false;
+        fall = false;
         currentMoveDelay = MOVE_DELAY;
         moveDelayCount = 0;
+        fallCount = 0;
         board = new boolean[GRID_SIZE_X][GRID_SIZE_Y];
         colorBoard = new Color[GRID_SIZE_X][GRID_SIZE_Y];
 
@@ -96,6 +101,7 @@ public class Board extends JPanel implements ActionListener {
         getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0, true), "StopRight");
         getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0, true), "StopLeft");
         getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0, false), "SoftDrop");
+        getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0, true), "StopSoftDrop");
         getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0, false), "HardDrop");
         getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_C, 0, false), "Hold");
 
@@ -167,9 +173,19 @@ public class Board extends JPanel implements ActionListener {
 
             @Override
             public void actionPerformed(ActionEvent e) {
+                fall = true;
+
                 update();
                 repaint();
                 bufferStall();
+            }
+        });
+
+        getActionMap().put("StopSoftDrop", new AbstractAction() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                fall = false;
             }
         });
 
@@ -361,6 +377,18 @@ public class Board extends JPanel implements ActionListener {
         } else {
             currentMoveDelay = MOVE_DELAY;
             moveDelayCount = 0;
+        }
+
+        if (fall) {
+            if (fallCount >= FALL_SPEED) {
+                update();
+                repaint();
+                fallCount = 0;
+            } else {
+                fallCount++;
+            }
+        } else {
+            fallCount = 0;
         }
     }
 

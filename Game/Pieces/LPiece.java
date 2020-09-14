@@ -8,9 +8,9 @@ import Game.Tetrominoe;
 public class LPiece extends Tetrominoe {
 
     public LPiece(Board board) {
-        super(board, new boolean[][] { { false, false, false }, 
+        super(board, new boolean[][] { { false, false, true }, 
                                        { true, true, true },
-                                       { true, false, false }, }, 
+                                       { false, false, false }, }, 
                                        true, Color.ORANGE);
     }
     

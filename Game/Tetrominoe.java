@@ -55,11 +55,32 @@ public abstract class Tetrominoe {
     }
 
     public void rotateLeft() {
-
+        if (canRotate) {
+            
+        }
     }
 
     public void rotateRight() {
+        if (canRotate) {
+            boolean[][] previousMatrix = new boolean[matrix.length][matrix[0].length];
 
+            for (int i = 0; i < matrix.length; i++) {
+                for (int j = 0; j < matrix[i].length; j++) {
+                    previousMatrix[i][j] = matrix[i][j];
+                }
+            }
+
+            for (int i = 0; i < matrix.length / 2; i++) {
+                for (int j = i; j < matrix.length - i - 1; j++) {
+                    boolean temp = matrix[i][j];
+
+                    matrix[i][j] = matrix[j][matrix.length - i - 1];
+                    matrix[j][matrix.length - i - 1] = matrix[matrix.length - i - 1][matrix.length - j - 1];
+                    matrix[matrix.length - i - 1][matrix.length - j - 1] = matrix[matrix.length - j - 1][i];
+                    matrix[matrix.length - j - 1][i] = temp;
+                }
+            }
+        }
     }
 
     private boolean kick(int xPos) {
@@ -103,7 +124,6 @@ public abstract class Tetrominoe {
                 for (int j = 0; j < boardMatrix.length; j++) {
                     if (boardMatrix[j][i + y]) {
                         row++;
-                        System.out.println(row);
                     } else {
                         break;
                     }

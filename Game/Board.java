@@ -79,7 +79,7 @@ public class Board extends JPanel implements ActionListener {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                // TODO Auto-generated method stub
+                currentPiece.rotateRight();
             }
         });
 
@@ -87,7 +87,7 @@ public class Board extends JPanel implements ActionListener {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                // TODO Auto-generated method stub
+                currentPiece.rotateRight();
             }
         });
 

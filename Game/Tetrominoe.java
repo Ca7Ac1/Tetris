@@ -48,13 +48,13 @@ public abstract class Tetrominoe {
     }
 
     public void moveLeft() {
-        if (!kick(x - 1)) {
+        if (!kick(x - 1, y)) {
             x--;
         }
     }
 
     public void moveRight() {
-        if (!kick(x + 1)) {
+        if (!kick(x + 1, y)) {
             x++;
         }
     }
@@ -88,7 +88,7 @@ public abstract class Tetrominoe {
         }
     }
 
-    private boolean kick(int xPos) {
+    private boolean kick(int xPos, int yPos) {
         boolean[][] totalMatrix = board.getBoard();
 
         for (int i = 0; i < matrix.length; i++) {
@@ -98,7 +98,7 @@ public abstract class Tetrominoe {
                         return true;
                     }
 
-                    if (totalMatrix[i + xPos][j + y]) {
+                    if (totalMatrix[i + xPos][j + yPos]) {
                         return true;
                     }
                 }

@@ -166,40 +166,6 @@ public class Board extends JPanel implements ActionListener {
         }
     }
 
-    public boolean[][] getBoard() {
-        return board;
-    }
-
-    public int getGridX() {
-        return GRID_SIZE_X;
-    }
-
-    public int getGridY() {
-        return GRID_SIZE_Y;
-    }
-
-    public int getGridSquareSize() {
-        return GRID_SQUARE_SIZE;
-    }
-
-    public boolean[][] getBoardMatrix() {
-        return board;
-    }
-
-    private void update() {
-        if (!currentPiece.fall()) {
-            if (fallBuffer == FALL_DELAY) {
-                fallBuffer = 0;
-                held = false;
-
-                currentPiece.convert(board, colorBoard);
-                getNextPiece();
-            } else {
-                fallBuffer++;
-            }
-        }
-    }
-
     public void drop() {
         int row;
 
@@ -339,4 +305,41 @@ public class Board extends JPanel implements ActionListener {
             }
         }
     }
+
+    private void update() {
+        if (!currentPiece.fall()) {
+            if (fallBuffer == FALL_DELAY) {
+                fallBuffer = 0;
+                held = false;
+
+                currentPiece.convert(board, colorBoard);
+                getNextPiece();
+            } else {
+                fallBuffer++;
+            }
+        } else {
+            fallBuffer = 0;
+        }
+    }
+
+    public boolean[][] getBoard() {
+        return board;
+    }
+
+    public int getGridX() {
+        return GRID_SIZE_X;
+    }
+
+    public int getGridY() {
+        return GRID_SIZE_Y;
+    }
+
+    public int getGridSquareSize() {
+        return GRID_SQUARE_SIZE;
+    }
+
+    public boolean[][] getBoardMatrix() {
+        return board;
+    }
+
 }

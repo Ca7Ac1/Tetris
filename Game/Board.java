@@ -27,6 +27,8 @@ public class Board extends JPanel implements ActionListener {
     private final int DELAY = 10;
     private final int DELAY_BUFFER = 15;
     private final int FALL_DELAY = 3;
+    private final int MOVE_DELAY = 8;
+    private final int MOVE_SUBTRACTION = 3;
     private final int STALL = 5;
 
     private boolean[][] board;
@@ -41,13 +43,21 @@ public class Board extends JPanel implements ActionListener {
     private Tetrominoe heldPiece;
     private boolean held;
 
+    private boolean moveLeft;
+    private boolean moveRight;
+
     private Tetrominoe[] pieceArray;
     private int pieceIndex;
+
+    private int currentMoveDelay;
+    private int moveDelayCount;
 
     public Board() {
         timer = new Timer(DELAY, this);
         bufferControlTimer = false;
         held = false;
+        currentMoveDelay = MOVE_DELAY;
+        moveDelayCount = 0;
         board = new boolean[GRID_SIZE_X][GRID_SIZE_Y];
         colorBoard = new Color[GRID_SIZE_X][GRID_SIZE_Y];
 
@@ -83,6 +93,8 @@ public class Board extends JPanel implements ActionListener {
         getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_V, 0, false), "RotateLeft");
         getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0, false), "MoveRight");
         getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0, false), "MoveLeft");
+        getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0, true), "StopRight");
+        getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0, true), "StopLeft");
         getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0, false), "SoftDrop");
         getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0, false), "HardDrop");
         getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_C, 0, false), "Hold");
@@ -110,6 +122,10 @@ public class Board extends JPanel implements ActionListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 currentPiece.moveRight();
+                moveRight = true;
+                moveLeft = false;
+                currentMoveDelay = MOVE_DELAY;
+                moveDelayCount = 0;
                 bufferStall();
             }
         });
@@ -119,7 +135,31 @@ public class Board extends JPanel implements ActionListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 currentPiece.moveLeft();
+                moveLeft = true;
+                moveRight = false;
+                currentMoveDelay = MOVE_DELAY;
+                moveDelayCount = 0;
                 bufferStall();
+            }
+        });
+
+        getActionMap().put("StopRight", new AbstractAction() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                moveRight = false;
+                currentMoveDelay = MOVE_DELAY;
+                moveDelayCount = 0;
+            }
+        });
+
+        getActionMap().put("StopLeft", new AbstractAction() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                moveLeft = false;
+                currentMoveDelay = MOVE_DELAY;
+                moveDelayCount = 0;
             }
         });
 
@@ -304,6 +344,24 @@ public class Board extends JPanel implements ActionListener {
                 buffer++;
             }
         }
+
+        if (moveLeft || moveRight) {
+            if (moveDelayCount >= currentMoveDelay) {
+                move();
+
+                moveDelayCount = 0;
+                currentMoveDelay -= MOVE_SUBTRACTION;
+
+                if (currentMoveDelay < 0) {
+                    currentMoveDelay = 0;
+                }
+            } else {
+                moveDelayCount++;
+            }
+        } else {
+            currentMoveDelay = MOVE_DELAY;
+            moveDelayCount = 0;
+        }
     }
 
     private void update() {
@@ -319,6 +377,14 @@ public class Board extends JPanel implements ActionListener {
             }
         } else {
             fallBuffer = 0;
+        }
+    }
+
+    private void move() {
+        if (moveLeft) {
+            currentPiece.moveLeft();
+        } else if (moveRight) {
+            currentPiece.moveRight();
         }
     }
 

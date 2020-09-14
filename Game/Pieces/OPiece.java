@@ -11,7 +11,7 @@ public class OPiece extends Tetrominoe {
         super(board, new boolean[][] { { true, true, false }, 
                                        { true, true, false },
                                        { false, false, false }, }, 
-                                       false, Color.GREEN);
+                                       false, Color.YELLOW);
     }
     
 }

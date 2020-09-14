@@ -9,6 +9,7 @@ import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.util.Random;
 
 import javax.swing.AbstractAction;
 import javax.swing.JPanel;
@@ -24,7 +25,7 @@ public class Board extends JPanel implements ActionListener {
     private final int HEIGHT = GRID_SIZE_Y * GRID_SQUARE_SIZE;
 
     private final int DELAY = 10;
-    private final int DELAY_BUFFER = 15;
+    private final int DELAY_BUFFER = 10;
 
     private boolean[][] board;
     private Color[][] colorBoard;
@@ -184,8 +185,19 @@ public class Board extends JPanel implements ActionListener {
     }
 
     private void shufflePieces() {
+        Random random = new Random();
+        int newPos;
+        Tetrominoe temp;
         pieceArray = new Tetrominoe[] { new IPiece(this), new JPiece(this), new LPiece(this), new SPiece(this),
                 new TPiece(this), new ZPiece(this), new OPiece(this) };
+
+        for (int i = 0; i < pieceArray.length; i++) {
+            newPos = random.nextInt(pieceArray.length);
+
+            temp = pieceArray[i];
+            pieceArray[i] = pieceArray[newPos];
+            pieceArray[newPos] = temp;
+        }
     }
 
     @Override

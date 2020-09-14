@@ -21,7 +21,7 @@ public abstract class Tetrominoe {
         this.matrix = matrix;
         this.canRotate = canRotate;
         this.color = color;
-        x = 5;
+        x = board.getGridX() / 3;
         y = 0;
     }
 
@@ -56,7 +56,7 @@ public abstract class Tetrominoe {
 
     public void rotateLeft() {
         if (canRotate) {
-            
+
         }
     }
 

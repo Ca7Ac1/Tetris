@@ -148,7 +148,7 @@ public class Board extends JPanel implements ActionListener {
     public void drop() {
         int row;
 
-        for (int i = GRID_SIZE_Y - 1; i >= 0; i--) {
+        for (int i = GRID_SIZE_Y - 1; i >= findHighestPoint(); i--) {
             row = 0;
 
             for (int j = 0; j < GRID_SIZE_X; j++) {
@@ -168,6 +168,17 @@ public class Board extends JPanel implements ActionListener {
                 }
             }
         }
+    }
+
+    private int findHighestPoint() {
+        for (int i = 0; i < GRID_SIZE_Y; i++) {
+            for (int j = 0; j < GRID_SIZE_X; j++) {
+                if (board[j][i]) {
+                    return i;
+                }
+            }
+        }
+        return GRID_SIZE_Y - 1;
     }
 
     private void shufflePieces() {

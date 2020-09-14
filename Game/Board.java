@@ -25,13 +25,17 @@ public class Board extends JPanel implements ActionListener {
     private final int HEIGHT = GRID_SIZE_Y * GRID_SQUARE_SIZE;
 
     private final int DELAY = 10;
-    private final int DELAY_BUFFER = 10;
+    private final int DELAY_BUFFER = 15;
+    private final int FALL_DELAY = 3;
+    private final int STALL = 5;
 
     private boolean[][] board;
     private Color[][] colorBoard;
 
     private Timer timer;
     private int buffer;
+    private int fallBuffer;
+    private boolean bufferControlTimer;
 
     private Tetrominoe currentPiece;
 
@@ -40,6 +44,7 @@ public class Board extends JPanel implements ActionListener {
 
     public Board() {
         timer = new Timer(DELAY, this);
+        bufferControlTimer = false;
         board = new boolean[GRID_SIZE_X][GRID_SIZE_Y];
         colorBoard = new Color[GRID_SIZE_X][GRID_SIZE_Y];
 
@@ -75,12 +80,15 @@ public class Board extends JPanel implements ActionListener {
         getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_V, 0, false), "RotateLeft");
         getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0, false), "MoveRight");
         getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0, false), "MoveLeft");
+        getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0, false), "SoftDrop");
+        getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0, false), "HardDrop");
 
         getActionMap().put("RotateRight", new AbstractAction() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
                 currentPiece.rotateRight();
+                bufferStall();
             }
         });
 
@@ -89,6 +97,7 @@ public class Board extends JPanel implements ActionListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 currentPiece.rotateRight();
+                bufferStall();
             }
         });
 
@@ -97,6 +106,7 @@ public class Board extends JPanel implements ActionListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 currentPiece.moveRight();
+                bufferStall();
             }
         });
 
@@ -105,8 +115,51 @@ public class Board extends JPanel implements ActionListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 currentPiece.moveLeft();
+                bufferStall();
             }
         });
+
+        getActionMap().put("SoftDrop", new AbstractAction() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                update();
+                repaint();
+                bufferStall();
+            }
+        });
+
+        getActionMap().put("HardDrop", new AbstractAction() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                while (currentPiece.fall()) {
+                    continue;
+                }
+
+                currentPiece.convert(board, colorBoard);
+
+                if (pieceIndex != pieceArray.length) {
+                    currentPiece = pieceArray[pieceIndex];
+                    pieceIndex++;
+                } else {
+                    System.out.println("refresh");
+                    shufflePieces();
+
+                    pieceIndex = 1;
+                    currentPiece = pieceArray[0];
+                }
+
+                repaint();
+                bufferStall();
+            }
+        });
+    }
+
+    private void bufferStall() {
+        if (bufferControlTimer) {
+            buffer -= STALL;
+        }
     }
 
     public boolean[][] getBoard() {
@@ -131,17 +184,23 @@ public class Board extends JPanel implements ActionListener {
 
     private void update() {
         if (!currentPiece.fall()) {
-            currentPiece.convert(board, colorBoard);
+            if (fallBuffer == FALL_DELAY) {
+                fallBuffer = 0;
 
-            if (pieceIndex != pieceArray.length) {
-                currentPiece = pieceArray[pieceIndex];
-                pieceIndex++;
+                currentPiece.convert(board, colorBoard);
+
+                if (pieceIndex != pieceArray.length) {
+                    currentPiece = pieceArray[pieceIndex];
+                    pieceIndex++;
+                } else {
+                    System.out.println("refresh");
+                    shufflePieces();
+
+                    pieceIndex = 1;
+                    currentPiece = pieceArray[0];
+                }
             } else {
-                System.out.println("refresh");
-                shufflePieces();
-
-                pieceIndex = 1;
-                currentPiece = pieceArray[0];
+                fallBuffer++;
             }
         }
     }
@@ -205,6 +264,7 @@ public class Board extends JPanel implements ActionListener {
         super.paintComponent(g);
 
         paintBoard(g);
+        paintGrid(g);
         currentPiece.draw(g);
     }
 
@@ -221,9 +281,22 @@ public class Board extends JPanel implements ActionListener {
         }
     }
 
+    private void paintGrid(Graphics g) {
+        Graphics2D g2d = (Graphics2D) g;
+
+        g2d.setColor(Color.WHITE);
+        for (int i = 0; i < GRID_SIZE_X; i++) {
+            for (int j = 0; j < GRID_SIZE_Y; j++) {
+                g2d.drawRect(i * GRID_SQUARE_SIZE, j * GRID_SQUARE_SIZE, GRID_SQUARE_SIZE, GRID_SQUARE_SIZE);
+            }
+        }
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         repaint();
+        bufferControlTimer = true;
+
         if (e.getSource() == timer) {
             if (buffer == DELAY_BUFFER) {
                 update();

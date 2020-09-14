@@ -51,7 +51,7 @@ public class Board extends JPanel implements ActionListener {
             for (int j = 0; j < board[i].length; j++) {
                 board[i][j] = false;
             }
-        }   
+        }
     }
 
     private void initBoard() {
@@ -131,7 +131,7 @@ public class Board extends JPanel implements ActionListener {
     private void update() {
         if (!currentPiece.fall()) {
             currentPiece.convert(board, colorBoard);
-            
+
             if (pieceIndex != pieceArray.length) {
                 currentPiece = pieceArray[pieceIndex];
                 pieceIndex++;
@@ -166,6 +166,8 @@ public class Board extends JPanel implements ActionListener {
                         colorBoard[replaceX][k] = colorBoard[replaceX][k - 1];
                     }
                 }
+
+                i++;
             }
         }
     }
@@ -183,7 +185,7 @@ public class Board extends JPanel implements ActionListener {
 
     private void shufflePieces() {
         pieceArray = new Tetrominoe[] { new IPiece(this), new JPiece(this), new LPiece(this), new SPiece(this),
-            new TPiece(this), new ZPiece(this), new OPiece(this) };
+                new TPiece(this), new ZPiece(this), new OPiece(this) };
     }
 
     @Override

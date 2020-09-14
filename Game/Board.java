@@ -38,6 +38,8 @@ public class Board extends JPanel implements ActionListener {
     private boolean bufferControlTimer;
 
     private Tetrominoe currentPiece;
+    private Tetrominoe heldPiece;
+    private boolean held;
 
     private Tetrominoe[] pieceArray;
     private int pieceIndex;
@@ -45,6 +47,7 @@ public class Board extends JPanel implements ActionListener {
     public Board() {
         timer = new Timer(DELAY, this);
         bufferControlTimer = false;
+        held = false;
         board = new boolean[GRID_SIZE_X][GRID_SIZE_Y];
         colorBoard = new Color[GRID_SIZE_X][GRID_SIZE_Y];
 
@@ -82,6 +85,7 @@ public class Board extends JPanel implements ActionListener {
         getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0, false), "MoveLeft");
         getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0, false), "SoftDrop");
         getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0, false), "HardDrop");
+        getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_C, 0, false), "Hold");
 
         getActionMap().put("RotateRight", new AbstractAction() {
 
@@ -137,21 +141,21 @@ public class Board extends JPanel implements ActionListener {
                     continue;
                 }
 
+                held = false;
+
                 currentPiece.convert(board, colorBoard);
-
-                if (pieceIndex != pieceArray.length) {
-                    currentPiece = pieceArray[pieceIndex];
-                    pieceIndex++;
-                } else {
-                    System.out.println("refresh");
-                    shufflePieces();
-
-                    pieceIndex = 1;
-                    currentPiece = pieceArray[0];
-                }
+                getNextPiece();
 
                 repaint();
                 bufferStall();
+            }
+        });
+
+        getActionMap().put("Hold", new AbstractAction() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                holdPiece();
             }
         });
     }
@@ -186,19 +190,10 @@ public class Board extends JPanel implements ActionListener {
         if (!currentPiece.fall()) {
             if (fallBuffer == FALL_DELAY) {
                 fallBuffer = 0;
+                held = false;
 
                 currentPiece.convert(board, colorBoard);
-
-                if (pieceIndex != pieceArray.length) {
-                    currentPiece = pieceArray[pieceIndex];
-                    pieceIndex++;
-                } else {
-                    System.out.println("refresh");
-                    shufflePieces();
-
-                    pieceIndex = 1;
-                    currentPiece = pieceArray[0];
-                }
+                getNextPiece();
             } else {
                 fallBuffer++;
             }
@@ -209,25 +204,29 @@ public class Board extends JPanel implements ActionListener {
         int row;
 
         for (int i = GRID_SIZE_Y - 1; i >= findHighestPoint(); i--) {
-            row = 0;
+            if (findHighestPoint() != GRID_SIZE_Y) {
+                row = 0;
 
-            for (int j = 0; j < GRID_SIZE_X; j++) {
-                if (!board[j][i]) {
-                    row++;
-                } else {
-                    break;
-                }
-            }
-
-            if (row == GRID_SIZE_X) {
-                for (int k = i; k > 0; k--) {
-                    for (int replaceX = 0; replaceX < GRID_SIZE_X; replaceX++) {
-                        board[replaceX][k] = board[replaceX][k - 1];
-                        colorBoard[replaceX][k] = colorBoard[replaceX][k - 1];
+                for (int j = 0; j < GRID_SIZE_X; j++) {
+                    if (!board[j][i]) {
+                        row++;
+                    } else {
+                        break;
                     }
                 }
 
-                i++;
+                if (row == GRID_SIZE_X) {
+                    for (int k = i; k > 0; k--) {
+                        for (int replaceX = 0; replaceX < GRID_SIZE_X; replaceX++) {
+                            board[replaceX][k] = board[replaceX][k - 1];
+                            colorBoard[replaceX][k] = colorBoard[replaceX][k - 1];
+                        }
+                    }
+
+                    i++;
+                }
+            } else {
+                break;
             }
         }
     }
@@ -240,7 +239,41 @@ public class Board extends JPanel implements ActionListener {
                 }
             }
         }
-        return GRID_SIZE_Y - 1;
+        return GRID_SIZE_Y;
+    }
+
+    private void getNextPiece() {
+        if (pieceIndex != pieceArray.length) {
+            currentPiece = pieceArray[pieceIndex];
+            pieceIndex++;
+        } else {
+            System.out.println("refresh");
+            shufflePieces();
+
+            pieceIndex = 1;
+            currentPiece = pieceArray[0];
+        }
+    }
+
+    private void holdPiece() {
+        if (!held) {
+            Tetrominoe temp;
+            held = true;
+
+            if (heldPiece == null) {
+                heldPiece = currentPiece;
+
+                heldPiece.resetPosition();
+                getNextPiece();
+            } else {
+                temp = heldPiece;
+                heldPiece = currentPiece;
+                currentPiece = temp;
+
+                currentPiece.resetPosition();
+                heldPiece.resetPosition();
+            }
+        }
     }
 
     private void shufflePieces() {

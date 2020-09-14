@@ -25,6 +25,11 @@ public abstract class Tetrominoe {
         y = 0;
     }
 
+    public void resetPosition() {
+        x = board.getGridX() / 3;
+        y = 0;
+    }
+
     public boolean fall() {
         boolean[][] boardMatrix = board.getBoardMatrix();
 

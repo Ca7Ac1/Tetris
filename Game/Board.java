@@ -27,7 +27,7 @@ public class Board extends JPanel implements ActionListener {
     private final int DELAY = 10;
     private final int DELAY_BUFFER = 15;
     private final int FALL_DELAY = 3;
-    private final int FALL_SPEED = 10;
+    private final int FALL_SPEED = 8;
     private final int MOVE_DELAY = 8;
     private final int MOVE_SUBTRACTION = 3;
     private final int STALL = 5;
@@ -321,6 +321,7 @@ public class Board extends JPanel implements ActionListener {
         paintBoard(g);
         paintGrid(g);
         currentPiece.draw(g);
+        currentPiece.drawGhost(g);
     }
 
     private void paintBoard(Graphics g) {

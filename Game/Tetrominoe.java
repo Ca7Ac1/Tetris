@@ -166,6 +166,28 @@ public abstract class Tetrominoe {
         }
     }
 
+    public void drawGhost(Graphics g) {
+        Graphics2D g2d = (Graphics2D) g;
+        int squareSize = board.getGridSquareSize();
+        int originalY = y;
+
+        g2d.setColor(new Color(1, 1, 1, .5f));
+
+        while (fall()) {
+            continue;
+        }
+
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix[i].length; j++) {
+                if (matrix[i][j]) {
+                    g2d.fillRect((i + x) * squareSize, (j + y) * squareSize, squareSize, squareSize);
+                }
+            }
+        }
+
+        y = originalY;
+    }
+
     public boolean[][] getMatrix() {
         return matrix;
     }

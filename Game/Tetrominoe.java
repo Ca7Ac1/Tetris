@@ -60,15 +60,34 @@ public abstract class Tetrominoe {
     }
 
     public void rotateLeft() {
+        boolean[][] previousMatrix = new boolean[matrix.length][matrix[0].length];
+        
         if (canRotate) {
+            for (int i = 0; i < matrix.length; i++) {
+                for (int j = 0; j < matrix[i].length; j++) {
+                    previousMatrix[i][j] = matrix[i][j];
+                }
+            }
 
+            for (int i = 0; i < matrix.length / 2; i++) {
+                for (int j = i; j < matrix.length - i - 1; j++) {
+                    boolean temp = matrix[i][j];
+
+                    matrix[i][j] = matrix[matrix.length - j - 1][i];
+                    matrix[matrix.length - j - 1][i] = matrix[matrix.length - i - 1][matrix.length - j - 1];
+                    matrix[matrix.length - i - 1][matrix.length - j - 1] = matrix[j][matrix.length - i - 1];
+                    matrix[j][matrix.length - i - 1] = temp;
+                }
+            }
         }
+
+        testLeft(previousMatrix);
     }
 
     public void rotateRight() {
+        boolean[][] previousMatrix = new boolean[matrix.length][matrix[0].length];
+        
         if (canRotate) {
-            boolean[][] previousMatrix = new boolean[matrix.length][matrix[0].length];
-
             for (int i = 0; i < matrix.length; i++) {
                 for (int j = 0; j < matrix[i].length; j++) {
                     previousMatrix[i][j] = matrix[i][j];
@@ -86,6 +105,37 @@ public abstract class Tetrominoe {
                 }
             }
         }
+
+        testRight(previousMatrix);
+    }
+
+    protected void testLeft(boolean[][] workingMatrix) {
+    }
+
+    protected void testRight(boolean[][] workingMatrix) {
+        if (!kick(x, y)) {
+            return;
+        } else if (!kick(x - 1, y)) {
+            x--;
+        } else if (!kick(x + 1, y)) {
+            x++;
+        } else if (!kick(x - 1, y + 1)) {
+            x--;
+            y++;
+        } else if (!kick(x + 1, y + 1)) {
+            x++;
+            y++;
+        } else if (!kick(x, y - 2)) {
+            y -= 2;
+        } else if (!kick(x - 1, y - 2)) {
+            x--;
+            y -= 2;
+        } else if (!kick(x + 1, y - 2)) {
+            x++;
+            y -= 2;
+        } else {
+            matrix = workingMatrix;
+        }
     }
 
     private boolean kick(int xPos, int yPos) {
@@ -94,13 +144,18 @@ public abstract class Tetrominoe {
         for (int i = 0; i < matrix.length; i++) {
             for (int j = 0; j < matrix[i].length; j++) {
                 if (matrix[i][j]) {
-                    if (i + xPos < 0 || i + xPos > board.getGridX() - 1) {
+                    if (i + xPos < 0 || i + xPos >= board.getGridX()) {
+                        return true;
+                    }
+                    
+                    if (j + yPos >= board.getGridY()) {
                         return true;
                     }
 
                     if (totalMatrix[i + xPos][j + yPos]) {
                         return true;
                     }
+
                 }
             }
         }

@@ -24,13 +24,14 @@ public class Board extends JPanel implements ActionListener {
     private final int WIDTH = GRID_SIZE_X * GRID_SQUARE_SIZE;
     private final int HEIGHT = GRID_SIZE_Y * GRID_SQUARE_SIZE;
 
-    private final int DELAY = 10;
-    private final int DELAY_BUFFER = 15;
+    private final int DELAY = 1;
+    private final int DELAY_BUFFER = 150;
     private final int FALL_DELAY = 3;
     private final int FALL_SPEED = 8;
-    private final int MOVE_DELAY = 8;
-    private final int MOVE_SUBTRACTION = 3;
     private final int STALL = 5;
+
+    private final int DAS = 18;
+    private final int ARR = 18;
 
     private boolean[][] board;
     private Color[][] colorBoard;
@@ -51,18 +52,19 @@ public class Board extends JPanel implements ActionListener {
     private Tetrominoe[] pieceArray;
     private int pieceIndex;
 
-    private int currentMoveDelay;
-    private int moveDelayCount;
     private int fallCount;
+
+    private int dasCounter;
+    private int arrCounter;
 
     public Board() {
         timer = new Timer(DELAY, this);
         bufferControlTimer = false;
         held = false;
         fall = false;
-        currentMoveDelay = MOVE_DELAY;
-        moveDelayCount = 0;
         fallCount = 0;
+        dasCounter = 0;
+        arrCounter = 0;
         board = new boolean[GRID_SIZE_X][GRID_SIZE_Y];
         colorBoard = new Color[GRID_SIZE_X][GRID_SIZE_Y];
 
@@ -130,8 +132,8 @@ public class Board extends JPanel implements ActionListener {
                 currentPiece.moveRight();
                 moveRight = true;
                 moveLeft = false;
-                currentMoveDelay = MOVE_DELAY;
-                moveDelayCount = 0;
+                arrCounter = 0;
+                dasCounter = 0;
                 bufferStall();
             }
         });
@@ -143,8 +145,8 @@ public class Board extends JPanel implements ActionListener {
                 currentPiece.moveLeft();
                 moveLeft = true;
                 moveRight = false;
-                currentMoveDelay = MOVE_DELAY;
-                moveDelayCount = 0;
+                arrCounter = 0;
+                dasCounter = 0;
                 bufferStall();
             }
         });
@@ -154,8 +156,8 @@ public class Board extends JPanel implements ActionListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 moveRight = false;
-                currentMoveDelay = MOVE_DELAY;
-                moveDelayCount = 0;
+                arrCounter = 0;
+                dasCounter = 0;
             }
         });
 
@@ -164,8 +166,8 @@ public class Board extends JPanel implements ActionListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 moveLeft = false;
-                currentMoveDelay = MOVE_DELAY;
-                moveDelayCount = 0;
+                arrCounter = 0;
+                dasCounter = 0;
             }
         });
 
@@ -363,21 +365,19 @@ public class Board extends JPanel implements ActionListener {
         }
 
         if (moveLeft || moveRight) {
-            if (moveDelayCount >= currentMoveDelay) {
-                move();
-
-                moveDelayCount = 0;
-                currentMoveDelay -= MOVE_SUBTRACTION;
-
-                if (currentMoveDelay < 0) {
-                    currentMoveDelay = 0;
+            if (dasCounter >= DAS) {
+                if (arrCounter >= ARR) {
+                    move();
+                    arrCounter = 0;
+                } else {
+                    arrCounter++;
                 }
             } else {
-                moveDelayCount++;
+                dasCounter++;
             }
         } else {
-            currentMoveDelay = MOVE_DELAY;
-            moveDelayCount = 0;
+            dasCounter = 0;
+            arrCounter = 0;
         }
 
         if (fall) {

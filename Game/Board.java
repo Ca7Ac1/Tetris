@@ -25,20 +25,20 @@ public class Board extends JPanel implements ActionListener {
     private final int HEIGHT = GRID_SIZE_Y * GRID_SQUARE_SIZE;
 
     private final int DELAY = 1;
-    private final int DELAY_BUFFER = 150;
-    private final int FALL_DELAY = 3;
-    private final int FALL_SPEED = 50;
+    private final int DELAY_BUFFER = 100;
+    private final int PLACE_DELAY = 1;
+    private final int FALL_SPEED = 35;
     private final int STALL = 5;
 
-    private final int DAS = 25;
-    private final int ARR = 18;
+    private final int DAS = 18;
+    private final int ARR = 2;
 
     private boolean[][] board;
     private Color[][] colorBoard;
 
     private Timer timer;
     private int buffer;
-    private int fallBuffer;
+    private int placeBuffer;
     private boolean bufferControlTimer;
 
     private Tetrominoe currentPiece;
@@ -113,6 +113,7 @@ public class Board extends JPanel implements ActionListener {
             public void actionPerformed(ActionEvent e) {
                 currentPiece.rotateRight();
                 bufferStall();
+                repaint();
             }
         });
 
@@ -122,6 +123,7 @@ public class Board extends JPanel implements ActionListener {
             public void actionPerformed(ActionEvent e) {
                 currentPiece.rotateLeft();
                 bufferStall();
+                repaint();
             }
         });
 
@@ -135,6 +137,7 @@ public class Board extends JPanel implements ActionListener {
                 arrCounter = 0;
                 dasCounter = 0;
                 bufferStall();
+                repaint();
             }
         });
 
@@ -148,6 +151,7 @@ public class Board extends JPanel implements ActionListener {
                 arrCounter = 0;
                 dasCounter = 0;
                 bufferStall();
+                repaint();
             }
         });
 
@@ -277,6 +281,9 @@ public class Board extends JPanel implements ActionListener {
             pieceIndex = 1;
             currentPiece = pieceArray[0];
         }
+
+        dasCounter = 0;
+        arrCounter = 0;
     }
 
     private void holdPiece() {
@@ -395,17 +402,17 @@ public class Board extends JPanel implements ActionListener {
 
     private void update() {
         if (!currentPiece.fall()) {
-            if (fallBuffer == FALL_DELAY) {
-                fallBuffer = 0;
+            if (placeBuffer == PLACE_DELAY) {
+                placeBuffer = 0;
                 held = false;
 
                 currentPiece.convert(board, colorBoard);
                 getNextPiece();
             } else {
-                fallBuffer++;
+                placeBuffer++;
             }
         } else {
-            fallBuffer = 0;
+            placeBuffer = 0;
         }
     }
 

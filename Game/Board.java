@@ -25,13 +25,13 @@ public class Board extends JPanel implements ActionListener {
     private final int HEIGHT = GRID_SIZE_Y * GRID_SQUARE_SIZE;
 
     private final int DELAY = 1;
-    private final int DELAY_BUFFER = 100;
+    private final int DELAY_BUFFER = 70;
     private final int PLACE_DELAY = 1;
-    private final int FALL_SPEED = 35;
+    private final int FALL_SPEED = 25;
     private final int STALL = 5;
 
-    private final int DAS = 50;
-    private final int ARR = 2;
+    private final int DAS = 12;
+    private final int ARR = 1;
 
     private boolean[][] board;
     private Color[][] colorBoard;

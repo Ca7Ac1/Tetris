@@ -24,14 +24,14 @@ public class Board extends JPanel implements ActionListener {
     private final int WIDTH = GRID_SIZE_X * GRID_SQUARE_SIZE;
     private final int HEIGHT = GRID_SIZE_Y * GRID_SQUARE_SIZE;
 
-    private final int DELAY = 1;
-    private final int DELAY_BUFFER = 70;
-    private final int PLACE_DELAY = 1;
-    private final int FALL_SPEED = 25;
-    private final int STALL = 5;
+    private final int DELAY = 0;
+    private final int DELAY_BUFFER = 160;
+    private final int PLACE_DELAY = 2;
+    private final int FALL_SPEED = 50;
+    private final int STALL = 30;
 
-    private final int DAS = 12;
-    private final int ARR = 1;
+    private final int DAS = 98;
+    private final int ARR = 8;
 
     private boolean[][] board;
     private Color[][] colorBoard;
@@ -369,34 +369,34 @@ public class Board extends JPanel implements ActionListener {
             } else {
                 buffer++;
             }
-        }
 
-        if (moveLeft || moveRight) {
-            if (dasCounter >= DAS) {
-                if (arrCounter >= ARR) {
-                    move();
-                    arrCounter = 0;
+            if (moveLeft || moveRight) {
+                if (dasCounter >= DAS) {
+                    if (arrCounter >= ARR) {
+                        move();
+                        arrCounter = 0;
+                    } else {
+                        arrCounter++;
+                    }
                 } else {
-                    arrCounter++;
+                    dasCounter++;
                 }
             } else {
-                dasCounter++;
+                dasCounter = 0;
+                arrCounter = 0;
             }
-        } else {
-            dasCounter = 0;
-            arrCounter = 0;
-        }
 
-        if (fall) {
-            if (fallCount >= FALL_SPEED) {
-                update();
-                repaint();
-                fallCount = 0;
+            if (fall) {
+                if (fallCount >= FALL_SPEED) {
+                    update();
+                    repaint();
+                    fallCount = 0;
+                } else {
+                    fallCount++;
+                }
             } else {
-                fallCount++;
+                fallCount = 0;
             }
-        } else {
-            fallCount = 0;
         }
     }
 

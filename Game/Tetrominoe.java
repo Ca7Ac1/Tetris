@@ -61,7 +61,7 @@ public abstract class Tetrominoe {
 
     public void rotateLeft() {
         boolean[][] previousMatrix = new boolean[matrix.length][matrix[0].length];
-        
+
         if (canRotate) {
             for (int i = 0; i < matrix.length; i++) {
                 for (int j = 0; j < matrix[i].length; j++) {
@@ -86,7 +86,7 @@ public abstract class Tetrominoe {
 
     public void rotateRight() {
         boolean[][] previousMatrix = new boolean[matrix.length][matrix[0].length];
-        
+
         if (canRotate) {
             for (int i = 0; i < matrix.length; i++) {
                 for (int j = 0; j < matrix[i].length; j++) {
@@ -147,7 +147,7 @@ public abstract class Tetrominoe {
                     if (i + xPos < 0 || i + xPos >= board.getGridX()) {
                         return true;
                     }
-                    
+
                     if (j + yPos >= board.getGridY()) {
                         return true;
                     }
@@ -190,7 +190,6 @@ public abstract class Tetrominoe {
                 }
 
                 if (row == board.getGridX()) {
-                    System.out.println("delete");
                     rowDeleted = true;
 
                     for (int k = 0; k < boardMatrix.length; k++) {
@@ -216,6 +215,21 @@ public abstract class Tetrominoe {
             for (int j = 0; j < matrix[i].length; j++) {
                 if (matrix[i][j]) {
                     g2d.fillRect((i + x) * squareSize, (j + y) * squareSize, squareSize, squareSize);
+                }
+            }
+        }
+    }
+
+    public void drawHold(Graphics g, int xPos, int yPos) {
+        Graphics2D g2d = (Graphics2D) g;
+        int squareSize = board.getGridSquareSize();
+
+        g2d.setColor(color);
+
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix[i].length; j++) {
+                if (matrix[i][j]) {
+                    g2d.fillRect((i * squareSize) + xPos, (j * squareSize) + yPos, squareSize, squareSize);
                 }
             }
         }

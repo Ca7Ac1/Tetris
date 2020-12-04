@@ -22,7 +22,7 @@ public class Main {
 
             @Override
             public void run() {
-                Main main = new Main();
+                new Main();
             }
         });
     }

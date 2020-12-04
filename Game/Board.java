@@ -24,14 +24,17 @@ public class Board extends JPanel implements ActionListener {
     private final int WIDTH = GRID_SIZE_X * GRID_SQUARE_SIZE;
     private final int HEIGHT = GRID_SIZE_Y * GRID_SQUARE_SIZE;
 
+    private final int WIDTH_EXTRA = GRID_SQUARE_SIZE * 5;
+    private final int HEIGHT_EXTRA = GRID_SIZE_Y * 2;
+
     private final int DELAY = 0;
-    private final int DELAY_BUFFER = 160;
-    private final int PLACE_DELAY = 2;
-    private final int FALL_SPEED = 50;
+    private final int DELAY_BUFFER = 180;
+    private final int PLACE_DELAY = 4;
+    private final int FALL_SPEED = 60;
     private final int STALL = 30;
 
-    private final int DAS = 98;
-    private final int ARR = 8;
+    private final int DAS = 80;
+    private final int ARR = 5;
 
     private boolean[][] board;
     private Color[][] colorBoard;
@@ -81,7 +84,7 @@ public class Board extends JPanel implements ActionListener {
     }
 
     private void initBoard() {
-        setPreferredSize(new Dimension(WIDTH, HEIGHT));
+        setPreferredSize(new Dimension(WIDTH + WIDTH_EXTRA, HEIGHT));
         setFocusable(true);
         setBackground(Color.BLACK);
     }
@@ -275,7 +278,6 @@ public class Board extends JPanel implements ActionListener {
             currentPiece = pieceArray[pieceIndex];
             pieceIndex++;
         } else {
-            System.out.println("refresh");
             shufflePieces();
 
             pieceIndex = 1;
@@ -329,6 +331,7 @@ public class Board extends JPanel implements ActionListener {
 
         paintBoard(g);
         paintGrid(g);
+        paintHold(g);
         currentPiece.draw(g);
         currentPiece.drawGhost(g);
     }
@@ -356,6 +359,12 @@ public class Board extends JPanel implements ActionListener {
             }
         }
     }
+    
+    private void paintHold(Graphics g) {
+        if (heldPiece != null) {
+            heldPiece.drawHold(g, WIDTH + (WIDTH_EXTRA / 4), HEIGHT_EXTRA);
+        }
+    }
 
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -374,6 +383,7 @@ public class Board extends JPanel implements ActionListener {
                 if (dasCounter >= DAS) {
                     if (arrCounter >= ARR) {
                         move();
+                        repaint();
                         arrCounter = 0;
                     } else {
                         arrCounter++;

@@ -220,7 +220,7 @@ public abstract class Tetrominoe {
         }
     }
 
-    public void drawHold(Graphics g, int xPos, int yPos) {
+    public void drawFloating(Graphics g, int xPos, int yPos) {
         Graphics2D g2d = (Graphics2D) g;
         int squareSize = board.getGridSquareSize();
 

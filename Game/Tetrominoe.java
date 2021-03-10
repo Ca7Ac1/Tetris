@@ -23,6 +23,8 @@ public abstract class Tetrominoe {
         this.color = color;
         x = board.getGridX() / 3;
         y = 0;
+
+        rotateLeft();
     }
 
     public void resetPosition() {

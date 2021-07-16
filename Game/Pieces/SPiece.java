@@ -9,8 +9,8 @@ public class SPiece extends Tetrominoe {
 
     public SPiece(Board board) {
         super(board, new boolean[][] { { false, false, false }, 
-                                       { false, true, true },
-                                       { true, true, false }, }, 
+                                       { true, true, false },
+                                       { false, true, true }, }, 
                                        true, Color.GREEN);
     }
     

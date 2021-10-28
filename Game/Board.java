@@ -35,7 +35,7 @@ public class Board extends JPanel implements ActionListener {
     private final int FALL_SPEED = 60;
     private final int STALL = 30;
 
-    private final int DAS = 75;
+    private final int DAS = 60;
     private final int ARR = 2;
 
     private boolean[][] board;
@@ -141,6 +141,7 @@ public class Board extends JPanel implements ActionListener {
 
             @Override
             public void actionPerformed(ActionEvent e) {
+                currentPiece.moveRight();
                 moveRight = true;
                 moveLeft = false;
                 arrCounter = 0;
@@ -154,6 +155,7 @@ public class Board extends JPanel implements ActionListener {
 
             @Override
             public void actionPerformed(ActionEvent e) {
+                currentPiece.moveLeft();
                 moveLeft = true;
                 moveRight = false;
                 arrCounter = 0;

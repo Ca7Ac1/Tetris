@@ -141,7 +141,6 @@ public class Board extends JPanel implements ActionListener {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                currentPiece.moveRight();
                 moveRight = true;
                 moveLeft = false;
                 arrCounter = 0;
@@ -155,7 +154,6 @@ public class Board extends JPanel implements ActionListener {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                currentPiece.moveLeft();
                 moveLeft = true;
                 moveRight = false;
                 arrCounter = 0;

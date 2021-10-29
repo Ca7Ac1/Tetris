@@ -35,7 +35,7 @@ public class Board extends JPanel implements ActionListener {
     private final int FALL_SPEED = 60;
     private final int STALL = 30;
 
-    private final int DAS = 60;
+    private final int DAS = 30;
     private final int ARR = 2;
 
     private boolean[][] board;
